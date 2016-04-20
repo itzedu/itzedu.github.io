@@ -1,0 +1,105 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+#container {
+	background-color: #EBEBEB;
+	width: 970px;
+	margin: 0 auto;
+	padding: 10px 45px 10px 10px;
+}
+
+#header {
+	background-color: #D8D8D8;
+	border-radius: 10px;
+	padding: 20px 0 20px 10px;
+	font-size: 48px;
+	margin-bottom: 25px;
+}
+
+#side-nav, #main {
+	display: inline-block;
+	vertical-align: top;
+}
+
+#side-nav {
+	background-color: #D8D8D8;
+	border-radius: 10px;
+	padding: 20px 25px 20px 0;
+	margin-right: 30px;
+}
+	#side-nav li {
+		margin-bottom: 2px;
+	}
+
+	#side-nav a {
+		text-decoration: none;
+	}
+
+	#side-nav span {
+		color: red;
+	}
+
+	#links {
+		margin-left: 35px;
+	}
+
+	#inner-link {
+		margin-left: 25px;
+	}
+
+
+#main {
+	background-color: #A0A0A0;
+	width: 67%;
+	padding: 35px 10px 20px 15px;
+	border-radius: 15px;
+}
+
+	#main h2 {
+ 		margin-bottom: 15px;
+ 		font-size: 32px;
+ 	}
+
+ 	#main p {
+ 		margin-bottom: 10px;
+ 	}
+
+ 	#main ul {
+ 		margin-left: 35px;
+ 	}
+
+ 	#main li {
+ 		margin-bottom: 15px;
+ 		font-size: 20px;
+ 	}
+
+ 	#taboo {
+ 		font-weight: none;
+ 	}
+
+#footer {
+	margin-top: 15px;
+	background-color: #D8D8D8;
+	border-radius: 15px;
+	padding: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
