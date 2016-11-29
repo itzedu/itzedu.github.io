@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="utf-8">
-<title>002.installationI</title>
+<title>003.installationII</title>
 
 
 <style type="text/css">
@@ -327,92 +327,62 @@ kbd {
 
 <body>
 
-<h1 id="toc_0">Installation I</h1>
+<h1 id="toc_0">Installation II</h1>
 
-<p>Installing Ruby and Ruby on Rails is something that all developers in any operating system struggle with. Because of the inner workings of each OS, there are many tools for Linux, Mac OS X and Windows that people have created to help with the installation of RoR. However, configurations and dependencies are always going to be different depending on the OS. This causes bugs where a developer in one OS will get a an error that others in another OS would not. These types of inconsistencies hurt productivity while developing in any language or framework.</p>
+<p>In the previous tab, we learned how to set up a VM with Vagrant. In this chapter, we are going to learn how to install Ruby and Rails with our VMs, Vagrant style.</p>
 
-<h2 id="toc_1">Enters Vagrant</h2>
+<h2 id="toc_1">Provisioning</h2>
 
-<p><a href="https://www.vagrantup.com/docs/why-vagrant">Why Vagrant?</a> Vagrant is a tool to create configurable, denpendable, and consistent development environments.</p>
+<p>Vagrant has support for automated provisioning. In other words, we can create a configuration file with everything that we need to download. When we run the command <code>vagrant up</code>, Vagrant will look at that file and download everything for us.</p>
 
-<blockquote>
-<p>... so whether you are working on Linux, Mac OS X, or Windows, all your team members are running code in the same environment, against the same dependencies, all configured the same way. Say goodbye to &quot;works on my machine&quot; bugs. - Vagrant</p>
-</blockquote>
+<div><pre><code class="language-none">cd first_vagrant_box
+touch bootstrap.sh</code></pre></div>
 
-<p>Does&#39;t this sound awesome? Everyone in this track will be running the same exact environment. Therefore, if someone runs into a configuration or dependency error, the solution can be quickly shared to everyone! This means that almost all of our bugs will be caused by the developer themselves, instead of obscure environment errors. In this chapter, we will set up Vagrant, install RoR in our virtual machines, and set up a static IP address for us to interact with our RoR application thorugh a browser.</p>
+<p>Open <em>bootstrap.sh</em> and copy and paste the following commands:</p>
 
-<h2 id="toc_2">Set Up Vagrant</h2>
+<div><pre><code class="language-none">#!/usr/bin/env bash
 
-<p>Vagrant allows users to easily create virtual machines. For those unfamiliar with VMs, they are simply an emulation of a computer system. For example, you can have a Mac OS X computer running a Windows virtual machine. To spin up virtual machines, Vagrant uses VirtualBox, a free virtualization software. </p>
+# upgrade and update the system
+sudo apt-get update
+sudo apt-get -y upgrade
 
-<ol>
-<li><a href="https://www.virtualbox.org/wiki/Downloads">Download</a> VirtualBox for your operating system.</li>
-<li><a href="https://releases.hashicorp.com/vagrant/1.8.6/">Download</a> Vagrant 1.8.6 for your operating system.</li>
-</ol>
+# install node.js for js runtime when using Rails
+sudo apt-get install -y nodejs
 
-<h4 id="toc_3">Getting Started</h4>
+# install RVM
+gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+\curl -sSL https://get.rvm.io | bash -s stable
+source /home/vagrant/.rvm/scripts/rvm
+rvm requirements
 
-<p>The first vagrant command that we are going to learn is <code>vagrant init</code>. This built in command will create something called a <em>Vagrantfile</em>. This file is what Vagrant uses to configure our virtual machines. Lets create a directory and run the init command.</p>
+# install Ruby and make 2.3.1 the default
 
-<div><pre><code class="language-none">$ mdkir first_vagrant_box
-$ cd first_vagrant_box
-$ vagrant init</code></pre></div>
+rvm install 2.3.1
+rvm use 2.3.1 --default
 
-<p>Now you should have a Vagrantfile in your directory. Feel free to open it in your text editor but do not change anything yet.</p>
+# install Bundler and Rails
 
-<h4 id="toc_4">Boxes</h4>
+gem install bundler --no-ri --no-rdoc
+gem install rails -v 4.2 --no-ri --no-rdoc</code></pre></div>
 
-<p>Instead of installing virtual machines from scratch every time, Vagrant uses a base image system to quickly make copies of any virtual machine. These images are called Vagrant &quot;boxes&quot;. Vagrant has a whole catalog of public boxes that we can download. You can visit at <a href="https://atlas.hashicorp.com/boxes/search">HashiCorp&#39;s Atlas catalog</a>. Let&#39;s add the ubuntu/trusty64 box to our computer.</p>
-
-<p><code>$ vagrant box add ubuntu/trusty64</code></p>
-
-<p>This command downloads that box from the catalog and saves it globally. To see a list of your boxes you can run </p>
-
-<p><code>$ vagrant box list</code></p>
-
-<p>Next, we will configure our Vagrantfile to use the box that we just downloaded. Open the Vagrantfile and let&#39;s configure our virtual machine to boot up with our ubuntu box.</p>
+<p>Now, we must edit our <em>Vagrantfile</em> so that it uses our provision.</p>
 
 <div><pre><code class="language-ruby">Vagrant.configure(&quot;2&quot;) do |config|
   config.vm.box = &quot;ubuntu/trusty64&quot;
+  config.vm.provision :shell, path: &quot;bootstrap.sh&quot;, privileged: false
 end</code></pre></div>
 
-<h4 id="toc_5">Vagrant Up</h4>
+<h2 id="toc_2">Port Forwarding</h2>
 
-<p>So far, we have done a couple things.</p>
+<p>Once we have everything installed, we need to be able to see the changes that we make in our browser. We can tell Vagrant to open traffic in specific ports so that we can access them from our host machine. For example, we can configure our VM to allow traffic on port 80 for web development purposes.</p>
 
-<ol>
-<li>Downloaded a ubuntu image.</li>
-<li>Initialized a directory with a Vagrantfile that uses that image.</li>
-</ol>
+<p>Update your <em>Vagrantfile</em> to the following:</p>
 
-<p>Next, we have to actually spin up that image into a running virtual machine. In your console, run:</p>
-
-<p><code>$ vagrant up</code></p>
-
-<p>Once the VM is up and running, we can ssh into it.</p>
-
-<p><code>$ vagrant ssh</code></p>
-
-<p>This command allows you to ssh into your virtual machine and interact with it. Soon, we will install Ruby and Ruby On Rails into our machines!</p>
-
-<h4 id="toc_6">Synced Folder</h4>
-
-<p>Everything is great so far, but how do we actually develop with our VM. Unlesss you are an expert in terminal editors such as VIM or Nano, writing code in your VMs does not seems like fun. So, Vagrant comes with a synced folder functionality. While you are ssh&#39;ed into your VM, run:</p>
-
-<div><pre><code class="language-none">vagrant@vagrant-ubuntu-trusty-64:~$ /vagrant
-vagrant@vagrant-ubuntu-trusty-64:~$ ls
-Vagrantfile</code></pre></div>
-
-<p>This <em>/vagrant</em> directory in your VM is automatically synced with the host machine&#39;s directory where <code>vagrant init</code> was executed. This means, if we open another terminal window and create a new file in host&#39;s <em>first</em>vagrant<em>box</em> directory, we will see that file in the VM <em>/vagrant</em> directory</p>
-
-<div><pre><code class="language-none">$ cd first_vagrant_box
-$ touch is_this_file_synced</code></pre></div>
-
-<p>Moment of truth.</p>
-
-<div><pre><code class="language-none">vagrant@vagrant-ubuntu-trusty-64:~$ /vagrant
-vagrant@vagrant-ubuntu-trusty-64:~$ ls
-is_this_file_synced  Vagrantfile</code></pre></div>
+<div><pre><code class="language-ruby">Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;ubuntu/trusty64&quot;
+  config.vm.network &quot;forwarded_port&quot;, guest: 3000, host: 3000
+  config.vm.provision :shell, path: &quot;bootstrap.sh&quot;, privileged: false
+end</code></pre></div>
 
 
 
