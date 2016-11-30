@@ -369,13 +369,12 @@ gem install rails -v 4.2 --no-ri --no-rdoc</code></pre></div>
 
 <div><pre><code class="language-ruby">Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
-  config.vm.network "forwarded_port", guest: 3000, host: 3000
-  config.vm.provision :shell, path: "bootstrap.sh", privileged: false
-
-
+  
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--memory", "1024"]  
   end
+  
+  config.vm.provision :shell, path: "bootstrap.sh", privileged: false
 end</code></pre></div>
 
 <h2 id="toc_2">Port Forwarding</h2>
@@ -385,8 +384,13 @@ end</code></pre></div>
 <p>Update your <em>Vagrantfile</em> to the following:</p>
 
 <div><pre><code class="language-ruby">Vagrant.configure(&quot;2&quot;) do |config|
-  config.vm.box = &quot;ubuntu/trusty64&quot;
-  config.vm.network &quot;forwarded_port&quot;, guest: 3000, host: 3000
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.network &quot;forwarded_port&quot;, guest: 3000, host: 3000  
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "1024"]  
+  end
+  
   config.vm.provision :shell, path: &quot;bootstrap.sh&quot;, privileged: false
 end</code></pre></div>
 
