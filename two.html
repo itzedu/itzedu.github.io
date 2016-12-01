@@ -372,7 +372,7 @@ gem install rails -v 4.2 --no-ri --no-rdoc</code></pre></div>
   
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--memory", "1024"]
-    vb.cpus = 2
+    vb.customize ["modifyvm", :id, "--cpus", 2]
   end
   
   config.vm.provision :shell, path: "bootstrap.sh", privileged: false
@@ -390,7 +390,7 @@ end</code></pre></div>
 
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--memory", "1024"]
-    vb.cpus = 2
+    vb.customize ["modifyvm", :id, "--cpus", 2]
   end
   
   config.vm.provision :shell, path: &quot;bootstrap.sh&quot;, privileged: false
